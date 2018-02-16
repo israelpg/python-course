@@ -11,6 +11,50 @@
 from __future__ import print_function
 
 
+# execute Linux command using a def:
+def bashCommand(cmd):
+        import subprocess
+        output = subprocess.check_output(cmd, shell = True)
+        print(output)
+# ... in execution:
+>>> bashCommand("pwd ; touch aaa1.txt ; ls -lah")
+/home/ip14aai
+total 56K
+drwx------. 20 ip14aai ip14aai 4.0K Feb 16 16:17 .
+drwxr-xr-x.  3 root    root      21 Feb  7 14:32 ..
+-rw-rw-r--.  1 ip14aai ip14aai    0 Feb 16 16:17 aaa1.txt
+-rw-------.  1 ip14aai ip14aai  12K Feb  9 16:48 .bash_history
+-rw-r--r--.  1 ip14aai ip14aai   18 Aug  2  2016 .bash_logout
+...
+
+
+# open file works like this:
+
+>>> x=open("/proc/diskstats")
+>>> type(x)
+<type 'file'>
+>>> print(x)
+<open file '/proc/diskstats', mode 'r' at 0x13d30c0>
+>>> for i in x:
+	print(i)
+
+	
+   8       0 sda 20604 39 1792286 54075 49982 9471 918230 74705 0 41844 128612
+
+   8       1 sda1 1965 0 55152 888 29 0 4289 106 0 425 994
+
+   8       2 sda2 18514 39 1735198 53049 42056 9471 913941 71125 0 39259 124005
+
+  11       0 sr0 21 0 132 8 0 0 0 0 0 8 8
+
+ 253       0 dm-0 18381 0 1732278 55318 52002 0 913941 205451 0 41690 260771
+
+ 253       1 dm-1 128 0 2136 159 0 0 0 0 0 156 159
+
+
+# function grep with two args, one is the grep itself-->needle (string) and fpath
+# a for loop is used to iterate in conjunction with open function
+# the function is called like this: disk_l = grep("sda", "/proc/diskstats")
 def grep(needle, fpath):
     """A simple grep implementation
 
@@ -18,8 +62,25 @@ def grep(needle, fpath):
              needs splitlines()
        goal: comprehension can filter lists
     """
-    return [x for x in open(fpath) if needle in x]
+    # for x in open.. "iterates to fetch content of opened file", checking grep for x, return if exists:
+    resultGrep = return [x for x in open(fpath) if needle in x]
+    print(*resultGrep[:], sep="\n")
 
+    #-------------------
+    # for instance in python shell:
+    >>> resultGrep1=grepFunction('sda','/proc/diskstats')
+    >>> type(resultGrep1)
+    <type 'list'>
+    >>> print(resultGrep1)
+    ['   8       0 sda 20604 39 1792286 54075 50072 9482 919249 74794 0 41927 128701\n', '   8       1 sda1 1965 0 55152 888 29 0 4289 106 0 425 994\n', '   8       2 sda2 18514 39 1735198 53049 42127 9482 914960 71206 0 39336 124086\n']
+    # better with a nice \n format:
+    print(*resultGrep1[:], sep="\n") # \t for tab
+           8       0 sda 20604 39 1792286 54075 50072 9482 919249 74794 0 41927 128701
+
+           8       1 sda1 1965 0 55152 888 29 0 4289 106 0 425 994
+
+           8       2 sda2 18514 39 1735198 53049 42127 9482 914960 71206 0 39336 124086
+    #--------------------
 
 def linux_threads(pid):
     """"Glob emulates shell expansion of * and ?
@@ -29,11 +90,11 @@ def linux_threads(pid):
          goal: startswith accepts tuple arguments
     """
     import glob
-    path = "/proc/{}/task/*/status".format(pid)
+    path = "/proc/{}/task/*/status".format(pid) # need format to enter arg in string, cannot call var
     t_info = ('Pid', 'Tgid', 'voluntary')  # this is a tuple!
-    for t in glob.glob(path):
+    for t in glob.glob(path): # glob.glob() --> selects a folder in Linux file hierarchy
         t_info = [x for x in open(t) if x.startswith(t_info)]
-        print(t_info)
+        print(*t_info[:], sep="\n")
 
 
 def multiplatform_stats(count):
@@ -84,7 +145,7 @@ def zip_iterables():
         zipper = list(zipper)
     assert zipper == [(0, "a"), (1, "b"), (2, "c"), (3, "d")]
 
-
+# calling this function, eg: linux_diskstats(sda)
 def linux_diskstats(disk):
     """Get I/O information from /proc/diskstats
 

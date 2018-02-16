@@ -9,6 +9,47 @@
 #     parenthesis with print!
 from __future__ import print_function
 
+# executing Linux bash commands in python shell:
+>>> result_ls="ls -lah"
+>>> import subprocess
+>>> out=subprocess.check_output(result_ls, shell=True)
+>>> print(out)
+total 56K
+drwx------. 20 ip14aai ip14aai 4.0K Feb 15 17:18 .
+drwxr-xr-x.  3 root    root      21 Feb  7 14:32 ..
+-rw-------.  1 ip14aai ip14aai  12K Feb  9 16:48 .bash_history
+-rw-r--r--.  1 ip14aai ip14aai   18 Aug  2  2016 .bash_logout
+-rw-r--r--.  1 ip14aai ip14aai  193 Aug  2  2016 .bash_profile
+-rw-r--r--.  1 ip14aai ip14aai  231 Aug  2  2016 .bashrc
+...
+# another example: assuming import subprocess was already done before
+>>> out2=subprocess.check_output("hostnamectl", shell=True)
+>>> print(out2)
+   Static hostname: 02DI20161235444
+         Icon name: computer-vm
+           Chassis: vm
+        Machine ID: 4c44df81a46e4d3ba86019ae9771ff71
+           Boot ID: fd87cc19ae1140cba64fd503e4467311
+    Virtualization: kvm
+  Operating System: CentOS Linux 7 (Core)
+       CPE OS Name: cpe:/o:centos:centos:7
+            Kernel: Linux 3.10.0-514.el7.x86_64
+      Architecture: x86-64
+
+# working with values (info/source: https://pyformat.info
+# old style:
+>>> print('this is a %s , yes a five, and next is %s' % (5, 6))
+this is a 5 , yes a five, and next is 6
+# new style:
+>>> print('Value 1 is {} and value 2 is {}'.format('one','two'))
+Value 1 is one and value 2 is two
+
+# user input / prompt -p:
+var1=input('please enter a value: ')
+
+# opening Linux files:
+thisFile = open("/proc/diskstats")
+print(*thisFile[:], sep "\n")
 
 def introducing_lists():
     # it's easy to create a list
@@ -65,6 +106,14 @@ def str_and_list():
     # ...we can even slice them
     f = "prova.txt"
     f[:-4], f[-4], f[-3:]
+
+# working with lambda in lists: functions map or filter:
+list1=[4,7,2,9,5,8,7,0,8,7,9]
+>>> print(list(filter(lambda x: x%2 == 0, list1)))
+[4, 2, 8, 0, 8]
+
+>>> print(list(map(lambda x: x*2, list1)))
+[8, 14, 4, 18, 10, 16, 14, 0, 16, 14, 18]
 
 
 def iterating_with_for():
