@@ -27,6 +27,12 @@ drwxr-xr-x.  3 root    root      21 Feb  7 14:32 ..
 -rw-r--r--.  1 ip14aai ip14aai   18 Aug  2  2016 .bash_logout
 ...
 
+# although sometimes is better to pass command bash arguments in a list:
+# and use Popen for dealing with PIPE:
+cmd = ["ls", "-la"]
+proc = subprocess.Popen(cmd, stdout=subprocess.PIPE)
+for line in proc.stdout.readlines():
+    print line
 
 # open file works like this:
 
@@ -62,7 +68,7 @@ def grep(needle, fpath):
              needs splitlines()
        goal: comprehension can filter lists
     """
-    # for x in open.. "iterates to fetch content of opened file", checking grep for x, return if exists:
+    # for x in open.. "iterates to fetch lines content of opened file", checking grep for x, return if exists:
     resultGrep = return [x for x in open(fpath) if needle in x]
     print(*resultGrep[:], sep="\n")
 
@@ -92,8 +98,8 @@ def linux_threads(pid):
     import glob
     path = "/proc/{}/task/*/status".format(pid) # need format to enter arg in string, cannot call var
     t_info = ('Pid', 'Tgid', 'voluntary')  # this is a tuple!
-    for t in glob.glob(path): # glob.glob() --> selects a folder in Linux file hierarchy
-        t_info = [x for x in open(t) if x.startswith(t_info)]
+    for t in glob.glob(path): # glob.glob() --> selects a folder in Linux file hierarchy, fetch file by file
+        t_info = [x for x in open(t) if x.startswith(t_info)] # and checks in that file if name startswith..
         print(*t_info[:], sep="\n")
 
 
